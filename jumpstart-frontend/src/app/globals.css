@@ -1,9 +1,4 @@
-@plugin "tailwindcss-animate";
-
-@custom-variant dark (&:is(.dark *));
-
-@import "tailwindcss/preflight";
-@tailwind utilities;
+@import "tailwindcss";
 
 @theme inline {
   --color-background: var(--background);
