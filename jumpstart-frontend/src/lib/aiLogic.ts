@@ -1,63 +1,61 @@
-// src/lib/aiLogic.ts
 export interface Item {
-  id: string;     
+  id: string;
   title: string;
   img: string;
   category: string;
 }
 
-export const aiPersonalization = {
-  // Read lightweight interaction counts from localStorage (per-category)
-  getInteractionCounts(): Record<string, number> {
-    if (typeof window === "undefined") return {};
-    const keys = Object.keys(localStorage).filter((k) =>
-      k.startsWith("interaction_")
-    );
-    const out: Record<string, number> = {};
-    for (const k of keys) {
-      out[k.replace("interaction_", "")] = Number(localStorage.getItem(k) || 0);
-    }
-    return out;
-  },
+class AIPersonalization {
+  private interactions: Record<string, number> = {};
 
-  // Record a single interaction (view/click) for a category
+  constructor() {
+    if (typeof window !== "undefined") {
+      const data = localStorage.getItem("aiInteractions");
+      if (data) this.interactions = JSON.parse(data);
+    }
+  }
+
   recordInteraction(category: string) {
-    if (typeof window === "undefined") return;
-    const key = `interaction_${category}`;
-    const curr = Number(localStorage.getItem(key) || "0");
-    localStorage.setItem(key, String(curr + 1));
-  },
+    this.interactions[category] = (this.interactions[category] || 0) + 1;
+    localStorage.setItem("aiInteractions", JSON.stringify(this.interactions));
+  }
 
-  // Compute simple weights from categories present in items
-  // returns a map category -> weight (higher => more relevant)
-  computeWeightsFromItems(items: Item[]): Record<string, number> {
-    const counts = this.getInteractionCounts();
+  getWeights(items: Item[]) {
+    const total = Object.values(this.interactions).reduce((a, b) => a + b, 0);
     const weights: Record<string, number> = {};
-    const uniqueCats = Array.from(new Set(items.map((i) => i.category)));
-    for (const cat of uniqueCats) {
-      // default base weight 1, add interactions to prefer previously clicked categories
-      weights[cat] = 1 + (counts[cat] || 0);
-    }
+
+    items.forEach((item) => {
+      const cat = item.category || "other";
+      const pref = this.interactions[cat] || 1;
+      weights[cat] = total > 0 ? pref / total : 1 / items.length;
+    });
+
     return weights;
-  },
+  }
 
-  // Sort items by the computed weights (descending)
-  sortItemsByPreference(items: Item[], weights: Record<string, number>): Item[] {
-    return [...items].sort((a, b) => (weights[b.category] || 0) - (weights[a.category] || 0));
-  },
+  sortItemsByPreference(items: Item[], weights: Record<string, number>) {
+    return items.sort((a, b) => {
+      const wa = weights[a.category] || 0;
+      const wb = weights[b.category] || 0;
+      return wb - wa;
+    });
+  }
 
-  // Simple top-line recommendation message based on highest interaction
-  getRecommendationText(): string {
-    const counts = this.getInteractionCounts();
-    const categories = Object.keys(counts);
-    if (categories.length === 0) {
-      const greetings = [
-        "Welcome — we’ll personalize your feed as you interact.",
-        "Pick a few favorites and we’ll tailor the content for you.",
-      ];
-      return greetings[Math.floor(Math.random() * greetings.length)];
-    }
-    const top = categories.sort((a, b) => counts[b] - counts[a])[0];
-    return `Because you explored ${top}, here are more items you might enjoy.`;
-  },
-};
+  getRecommendationText() {
+    const sorted = Object.entries(this.interactions)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3);
+
+    if (sorted.length === 0) return "AI is still learning your preferences...";
+    return `AI suggests more about ${sorted.map(([c]) => c).join(", ")}.`;
+  }
+
+  getPreferenceSummary() {
+    return Object.entries(this.interactions).map(([cat, val]) => ({
+      category: cat,
+      score: val,
+    }));
+  }
+}
+
+export const aiPersonalization = new AIPersonalization();
