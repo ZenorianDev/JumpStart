@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 const interestsList = [
   { id: 1, title: "Fashion", img: "/images/fashion.jpg" },
@@ -21,6 +22,7 @@ const interestsList = [
 
 export default function InterestSelectionPage() {
   const [selectedInterests, setSelectedInterests] = useState<number[]>([]);
+  const [isPersonalizing, setIsPersonalizing] = useState(false);
   const router = useRouter();
 
   const toggleInterest = (id: number) => {
@@ -36,17 +38,67 @@ export default function InterestSelectionPage() {
       .filter((i) => selectedInterests.includes(i.id))
       .map((i) => i.title);
 
-    // Save selected interests to localStorage
     localStorage.setItem("userInterests", JSON.stringify(selectedTitles));
 
-    // Navigate to Dashboard
-    router.push("/dashboard");
+    // Trigger AI personalization overlay
+    setIsPersonalizing(true);
+
+    // Simulate personalization process
+    setTimeout(() => {
+      setIsPersonalizing(false);
+      router.push("/dashboard");
+    }, 3000);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white relative overflow-hidden">
+      {/* === AI Personalization Overlay === */}
+      <AnimatePresence>
+        {isPersonalizing && (
+          <motion.div
+            className="absolute inset-0 bg-white/95 flex flex-col items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h2
+              className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              🤖 Personalizing your experience...
+            </motion.h2>
+            <motion.p
+              className="text-gray-600 mb-8 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              Analyzing your selected interests to tailor your dashboard
+            </motion.p>
+
+            {/* Progress Bar */}
+            <motion.div
+              className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden"
+              initial={{ width: 0 }}
+              animate={{ width: "16rem" }}
+              transition={{ duration: 3, ease: "easeInOut" }}
+            >
+              <motion.div
+                className="h-full bg-black"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 3, ease: "easeInOut" }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Navbar */}
-      <nav className="sticky top-0 bg-black text-white flex justify-between items-center px-10 py-4 z-50">
+      <nav className="sticky top-0 bg-black text-white flex justify-between items-center px-10 py-4 z-40">
         <h1
           onClick={() => router.push("/")}
           className="font-bold text-xl cursor-pointer"
@@ -75,9 +127,7 @@ export default function InterestSelectionPage() {
         <h2 className="text-3xl md:text-4xl font-bold">
           Choose What Interests You
         </h2>
-        <p className="text-gray-600 mt-2">
-          We’ll personalize what you want!
-        </p>
+        <p className="text-gray-600 mt-2">We’ll personalize what you want!</p>
       </section>
 
       {/* Interests Grid */}
@@ -110,7 +160,7 @@ export default function InterestSelectionPage() {
 
       {/* Continue Button */}
       {selectedInterests.length > 0 && (
-        <div className="fixed bottom-8 left-0 right-0 flex justify-center">
+        <div className="fixed bottom-8 left-0 right-0 flex justify-center z-40">
           <button
             onClick={handleContinue}
             className="bg-black text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all"
