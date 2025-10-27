@@ -23,14 +23,17 @@ export default function LandingPage() {
       <section className="relative h-screen flex flex-col justify-center items-center text-center overflow-hidden">
         {/* Optimized Background */}
         <div className="absolute inset-0 -z-10">
-          <Image
-            src="/images/jumpstart-hero.png"
-            alt="Hero background"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          {/* ✅ Added relative wrapper with explicit height */}
+          <div className="relative w-full h-full">
+            <Image
+              src="/images/jumpstart-hero.png"
+              alt="Hero background"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
           <div className="absolute inset-0 bg-black/70" />
         </div>
 
