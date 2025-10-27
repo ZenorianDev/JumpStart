@@ -19,7 +19,6 @@ export default function DashboardPage() {
 
   // Load user interests from localStorage
   useEffect(() => {
-    // Defer to next frame to avoid synchronous setState in the effect body (ESLint-safe).
     requestAnimationFrame(() => {
       const saved = localStorage.getItem("userInterests");
       if (!saved) {
