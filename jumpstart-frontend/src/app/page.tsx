@@ -81,7 +81,7 @@ export default function LandingPage() {
           <div className="flex justify-center items-center">
             <div className="relative w-full max-w-md h-[300px] rounded-xl overflow-hidden shadow-lg">
               <Image
-                src="/explore-preview.png"
+                src="/images/jumpstart-hero.png"
                 alt="Explore Preview"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
