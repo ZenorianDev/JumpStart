@@ -14,7 +14,7 @@ const interestsList = [
   { id: 6, title: "Art", img: "/images/art.png" },
   { id: 7, title: "Furniture", img: "/images/furniture.jpg" },
   { id: 8, title: "Health & Beauty", img: "/images/health.jpg" },
-  { id: 9, title: "Food", img: "/images/food.png" },
+  { id: 9, title: "Food", img: "/images/foods.png" },
   { id: 10, title: "Beverages", img: "/images/drinks.jpg" },
   { id: 11, title: "Toys", img: "/images/toys.jpg" },
   { id: 12, title: "Hardware", img: "/images/hardware.jpg" },
