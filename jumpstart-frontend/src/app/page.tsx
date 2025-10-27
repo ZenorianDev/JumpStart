@@ -24,7 +24,7 @@ export default function LandingPage() {
         {/* Optimized Background */}
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/hero-bg.jpg"
+            src="/images/jumpstart-hero.png"
             alt="Hero background"
             fill
             priority
