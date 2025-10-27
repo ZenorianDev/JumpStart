@@ -1,11 +1,12 @@
+// src/app/details/[id]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { Heart, Share2, Bookmark, MessageCircle } from "lucide-react";
+import { Heart, Share2, Bookmark, MessageCircle, ArrowLeft } from "lucide-react";
 import { interestsData } from "@/lib/data";
-import { aiDescription } from "@/lib/aiDescription";
+import { aiDescription } from "@/lib/aiDescription"; // your generator
 import { aiPersonalization } from "@/lib/aiLogic";
 
 interface DetailItem {
@@ -23,100 +24,74 @@ export default function DetailPage() {
 
   useEffect(() => {
     if (!id) return;
-
-    const allItems: DetailItem[] = interestsData.flatMap((interest) =>
-      interest.samples.map((src, i) => ({
-        id: `${interest.name}-${i}`,
-        title: interest.name,
-        image: src,
-        category: interest.name,
-      }))
-    );
-
-    const found = allItems.find(
-      (it) => it.id === id || it.title.toLowerCase() === id
-    );
-
-    if (found) {
-      aiPersonalization.recordInteraction(found.category || "General");
-      const desc = aiDescription.generateDescription(
-        found.title,
-        found.category
+    const t = setTimeout(() => {
+      // Build the same item list used by dashboard
+      const all: DetailItem[] = interestsData.flatMap((s) =>
+        s.samples.map((src, i) => ({
+          id: `${s.name}-${i}`,
+          title: s.name,
+          image: src,
+          category: s.name,
+        }))
       );
 
-      // ✅ Only one state update here (no cascading renders)
+      // find by id (id is a string like "Fashion-0")
+      const found = all.find((it) => it.id === id || it.title.toLowerCase() === id.toLowerCase());
+      if (!found) {
+        router.push("/dashboard");
+        return;
+      }
+
+      // record interaction and generate description first
+      aiPersonalization.recordInteraction(found.category);
+      const desc = aiDescription.generateDescription(found.title, found.category);
+
+      // single, deferred state update
       setItem({ ...found, description: desc });
-    } else {
-      router.push("/dashboard");
-    }
+    }, 0);
+
+    return () => clearTimeout(t);
   }, [id, router]);
 
-  if (!item)
-    return (
-      <div className="flex items-center justify-center h-screen text-gray-500">
-        Loading...
-      </div>
-    );
+  if (!item) return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 text-black">
-      <main className="flex flex-col items-center justify-start p-10">
-        <div className="w-full max-w-5xl bg-white rounded-3xl shadow-lg overflow-hidden p-8">
+    <div className="min-h-screen bg-gray-50 text-black">
+      <main className="max-w-5xl mx-auto p-8">
+        <button onClick={() => router.back()} className="mb-6 flex items-center gap-2 text-gray-600">
+          <ArrowLeft size={18} /> Back
+        </button>
+
+        <div className="bg-white rounded-3xl p-8 shadow">
           <div className="flex flex-col md:flex-row gap-6">
-            <Image
-              src={item.image}
-              alt={item.title}
-              width={500}
-              height={500}
-              className="rounded-2xl w-full md:w-1/2 object-cover"
-            />
-            <div className="flex flex-col justify-between w-full md:w-1/2">
-              <div>
-                <h1 className="text-3xl font-semibold mb-4">{item.title}</h1>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {item.description}
-                </p>
+            <Image src={item.image} alt={item.title} width={600} height={450} className="rounded-2xl object-cover" />
+            <div className="flex-1">
+              <h1 className="text-3xl font-semibold mb-3">{item.title}</h1>
+              <p className="text-gray-700 mb-6">{item.description}</p>
+
+              <div className="flex gap-4 mb-6">
+                <Heart className="cursor-pointer" />
+                <MessageCircle className="cursor-pointer" />
+                <Share2 className="cursor-pointer" />
+                <Bookmark className="cursor-pointer" />
               </div>
 
-              <div className="flex gap-4">
-                <Heart className="cursor-pointer hover:text-red-500" />
-                <MessageCircle className="cursor-pointer hover:text-blue-500" />
-                <Share2 className="cursor-pointer hover:text-green-500" />
-                <Bookmark className="cursor-pointer hover:text-yellow-500" />
-              </div>
-
-              <button
-                className="mt-6 px-6 py-2 bg-black text-white rounded-full w-fit"
-                onClick={() => router.push("/dashboard")}
-              >
+              <button className="px-5 py-2 bg-black text-white rounded-full" onClick={() => router.push("/dashboard")}>
                 Back to Feed
               </button>
             </div>
           </div>
         </div>
-      </main>
 
-      {/* Optional extension below */}
-      <section className="p-10 bg-white shadow-inner mt-10">
-        <h2 className="text-xl font-semibold mb-6 text-center">
-          More Like This
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {interestsData
-            .find((i) => i.name === item.category)
-            ?.samples.slice(0, 4)
-            .map((src, i) => (
-              <Image
-                key={i}
-                src={src}
-                alt="Related"
-                width={300}
-                height={200}
-                className="rounded-xl object-cover hover:scale-[1.03] transition-transform"
-              />
+        <section className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">More like this</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {interestsData.find((i) => i.name === item.category)?.samples.slice(0, 4).map((src, idx) => (
+              <Image key={idx} src={src} alt="related" width={300} height={200} className="rounded-lg object-cover" />
             ))}
-        </div>
-      </section>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
