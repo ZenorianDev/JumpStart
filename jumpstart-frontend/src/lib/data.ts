@@ -39,7 +39,9 @@ export const interestsData = [
     name: "Art",
     samples: [
       "/images/art2.jpg",
-      "/images/art3.jpg"
+      "/images/art3.jpg",
+      "/images/art4.jpg",
+      "/images/art5.jpg"
     ],
   },
   {
@@ -61,13 +63,17 @@ export const interestsData = [
     samples: [
       "/images/food2.jpg",
       "/images/food3.jpg",
+      "/images/food4.jpg",
+      "/images/food5.jpg"
     ],
   },
   {
     name: "Beverages",
     samples: [
       "/images/drinks2.jpg",
-      "/images/drinks3.jpg"
+      "/images/drinks3.jpg",
+      "/images/drinks4.jpg",
+      "/images/drinks5.jpg"
     ],
   },
   {
