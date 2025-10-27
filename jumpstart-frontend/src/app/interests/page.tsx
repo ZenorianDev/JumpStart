@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const interestsList = [
-  { id: 1, title: "Fashion", img: "/images/fashion.jpg" },
+  { id: 1, title: "Fashion", img: "/src/images/fashion.png" },
   { id: 2, title: "Technology", img: "/images/tech.jpg" },
   { id: 3, title: "Travel", img: "/images/travel.jpg" },
   { id: 4, title: "Sports", img: "/images/sports.jpg" },
