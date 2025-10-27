@@ -4,9 +4,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { Home, PenTool, User } from "lucide-react";
 import { Heart, Share2, Bookmark, MessageCircle, ArrowLeft } from "lucide-react";
 import { interestsData } from "@/lib/data";
-import { aiDescription } from "@/lib/aiDescription"; // your generator
+import { aiDescription } from "@/lib/aiDescription";
 import { aiPersonalization } from "@/lib/aiLogic";
 
 interface DetailItem {
@@ -56,6 +57,14 @@ export default function DetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-black">
+      <aside className="w-20 bg-black text-white flex flex-col items-center py-6 space-y-8 fixed h-full">
+        <h1 onClick={() => router.push("/")} className="text-2xl font-bold cursor-pointer">J</h1>
+        <nav className="flex flex-col items-center space-y-6 mt-10">
+          <button title="Home"><Home size={22} /></button>
+          <button title="Create"><PenTool size={22} /></button>
+          <button title="Profile"><User size={22} /></button>
+        </nav>
+      </aside>
       <main className="max-w-5xl mx-auto p-8">
         <button onClick={() => router.back()} className="mb-6 flex items-center gap-2 text-gray-600">
           <ArrowLeft size={18} /> Back
@@ -91,6 +100,38 @@ export default function DetailPage() {
           </div>
         </section>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-black text-gray-400 py-10 mt-20">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
+          <div>
+            <h3 className="text-white font-bold text-lg mb-3">JumpStart</h3>
+            <p className="text-sm">
+              Empowering creators and businesses with AI-personalized discovery.
+            </p>
+          </div>
+          <div>
+            <h4 className="text-white mb-2 font-semibold">Site Map</h4>
+            <ul className="space-y-1 text-sm">
+              <li><a href="#" className="hover:text-white">Home</a></li>
+              <li><a href="#" className="hover:text-white">About</a></li>
+              <li><a href="#" className="hover:text-white">Businesses</a></li>
+              <li><a href="#" className="hover:text-white">Create</a></li>
+              <li><a href="#" className="hover:text-white">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white mb-2 font-semibold">Legal</h4>
+            <ul className="space-y-1 text-sm">
+              <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="text-center text-xs mt-8 border-t border-white/10 pt-4">
+          © 2025 JumpStart | All Rights Reserved
+        </div>
+      </footer>
     </div>
   );
 }
