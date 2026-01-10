@@ -5,7 +5,7 @@ Jumpstart is an interactive mocked-up AI-powered e-commerce prototype that lets 
 experience personalized shopping instantly — no signup required.
 </p>
 
-<img src="image/jumpstart.png" alt="JumpStart" width="600">
+<img src="images/jumpstart.png" alt="JumpStart" width="600">
 
 <br>
 
