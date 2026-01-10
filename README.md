@@ -36,7 +36,7 @@ To clone this project, use the following command:
 </p>
 
 <p>
-<code>git clone https://github.com/yourusername/Jumpstart.git</code>
+<code>git clone https://github.com/yourusername/JumpStart-Demo-Capstone.git</code>
 </p>
 
 <br>
