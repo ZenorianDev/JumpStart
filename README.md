@@ -40,7 +40,7 @@ To clone this project, use the following command:
 </p>
 
 <p>
-<code>git clone https://github.com/yourusername/JumpStart.git</code>
+<code>git clone https://github.com/ZenorianDev/JumpStart.git</code>
 </p>
 
 <br>
